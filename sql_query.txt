@@ -1,0 +1,111 @@
+CREATE TABLE users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'staff', 'data_collector') NOT NULL DEFAULT 'staff',
+    is_staff BOOLEAN DEFAULT TRUE,
+    is_admin BOOLEAN DEFAULT TRUE,
+    created_by INT NULL, -- only for data_collectors created by staff
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (created_by) REFERENCES users(user_id)
+);
+
+
+CREATE TABLE au_users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    address TEXT NOT NULL,
+    age INT NOT NULL,
+    phone VARCHAR(15) NOT NULL UNIQUE,
+    email VARCHAR(255),
+    product_id INT NOT NULL,
+    area_of_production TEXT NOT NULL,
+    aadhar VARCHAR(20) UNIQUE,
+    pan VARCHAR(20) UNIQUE,
+    documentary_proof TEXT,
+    annual_production INT,
+    annual_turnover INT,
+    years_of_production INT,
+    association_id INT NOT NULL,
+    signature_uploaded TEXT,
+    aadhar_uploaded TEXT,
+    pan_uploaded TEXT,
+    updated_at DATETIME,
+    
+    FOREIGN KEY (product_id) REFERENCES products(product_id),
+    FOREIGN KEY (association_id) REFERENCES associations(association_id)
+);
+
+CREATE TABLE products (
+    product_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE report_templates (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE associations (
+    association_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE report_logs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL, -- data collector
+    template_id INT NOT NULL,
+    generated_at DATETIME,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (template_id) REFERENCES report_templates(id)
+);
+
+CREATE TABLE transactions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL, -- staff or data_collector who created the AU user
+    au_user_id INT NOT NULL,
+    action VARCHAR(255),
+    created_at DATE DEFAULT CURRENT_DATE,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (au_user_id) REFERENCES au_users(id)
+);
+
+CREATE TABLE notifications (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL, -- can be staff or data collector
+    message TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+ALTER TABLE users
+ADD COLUMN name TEXT,
+ADD COLUMN email TEXT,
+ADD COLUMN address TEXT,
+ADD COLUMN age INTEGER,
+ADD COLUMN phone TEXT;
+
+
+ALTER TABLE au_users ADD COLUMN photos_uploaded TEXT;
+
+ALTER TABLE au_users ALTER COLUMN product_id DROP NOT NULL;
+ALTER TABLE au_users ALTER COLUMN association_id DROP NOT NULL;
+
+CREATE TABLE user_products (
+  user_id UUID NOT NULL,
+  product_id UUID NOT NULL,
+  association_id UUID NOT NULL);
+
+ALTER TABLE au_users DROP CONSTRAINT au_users_phone_key;
+
+
+
+
+
