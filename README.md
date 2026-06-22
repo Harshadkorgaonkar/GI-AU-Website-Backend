@@ -1,5 +1,5 @@
-# GI-AU Registration System
 
+![GI-AU Banner](banner.jpeg)
 ## 📌 Project Overview
 
 GI-AU Registration System is a web-based application developed to manage registration data related to GI-tagged products in the Bodoland region. The system helps maintain information about local producers, artisans, and products involved in the GI registration process.
@@ -107,8 +107,7 @@ Harshad Korgaonkar
 
 Bachelor of Science in Computer Science
 
-GitHub: Your GitHub Profile Link
-LinkedIn: Your LinkedIn Profile Link
+
 
 ```
 ```
